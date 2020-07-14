@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pmsj.cinema.common.mapper.MovieMapper">
+    <resultMap id="BaseResultMap" type="com.pmsj.cinema.common.entity.Movie">
+        <id column="movie_id" jdbcType="INTEGER" property="movieId"/>
+        <result column="movie_name" jdbcType="VARCHAR" property="movieName"/>
+        <result column="movie_release_time" jdbcType="DATE" property="movieReleaseTime"/>
+        <result column="movie_area" jdbcType="VARCHAR" property="movieArea"/>
+        <result column="movie_info" jdbcType="VARCHAR" property="movieInfo"/>
+        <result column="movie_img" jdbcType="VARCHAR" property="movieImg"/>
+        <result column="movie_ename" jdbcType="VARCHAR" property="movieEname"/>
+        <result column="movie_score" jdbcType="REAL" property="movieScore"/>
+        <result column="movie_status" jdbcType="INTEGER" property="movieStatus"/>
+        <result column="movie_count" jdbcType="INTEGER" property="movieCount"/>
+        <result column="movie_box_office" jdbcType="INTEGER" property="movieBoxOffice"/>
+        <result column="movie_time" jdbcType="VARCHAR" property="movieTime"/>
+        <result column="movie_want_count" property="movieWantCount"/>
+
+        <collection property="movieTpyeList" ofType="com.pmsj.cinema.common.entity.MovieTpye">
+            <result property="typeName" column="type_Name"/>
+        </collection>
+
+    </resultMap>
+    <resultMap id="ActorByMovie" type="com.pmsj.cinema.common.entity.Movie">
+        <id column="movie_id" jdbcType="INTEGER" property="movieId"/>
+        <result column="movie_name" jdbcType="VARCHAR" property="movieName"/>
+        <result column="movie_release_time" jdbcType="DATE" property="movieReleaseTime"/>
+        <result column="movie_area" jdbcType="VARCHAR" property="movieArea"/>
+        <result column="movie_info" jdbcType="VARCHAR" property="movieInfo"/>
+        <result column="movie_img" jdbcType="VARCHAR" property="movieImg"/>
+        <result column="movie_ename" jdbcType="VARCHAR" property="movieEname"/>
+        <result column="movie_score" jdbcType="REAL" property="movieScore"/>
+        <result column="movie_status" jdbcType="INTEGER" property="movieStatus"/>
+        <result column="movie_count" jdbcType="INTEGER" property="movieCount"/>
+        <result column="movie_box_office" jdbcType="INTEGER" property="movieBoxOffice"/>
+        <result column="movie_time" jdbcType="VARCHAR" property="movieTime"/>
+        <result column="movie_want_count" property="movieWantCount"/>
+        <collection property="actor" ofType="com.pmsj.cinema.common.entity.Cast">
+            <id column="actor_id" property="actorId"/>
+            <result column="actor_name" property="actorName"/>
+            <result column="actor_img" property="actorImg"/>
+            <result column="movie_actor_role" property="actorRole"/>
+            <result column="movie_actor_type" property="actorTpye"/>
+        </collection>
+
+
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from movie
+    where movie_id = #{movieId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.pmsj.cinema.common.entity.Movie">
+    insert into movie (movie_id, movie_name, movie_release_time, 
+      movie_area, movie_info, movie_img, 
+      movie_ename, movie_score, movie_status, 
+      movie_count, movie_box_office, movie_time
+      )
+    values (#{movieId,jdbcType=INTEGER}, #{movieName,jdbcType=VARCHAR}, #{movieReleaseTime,jdbcType=DATE}, 
+      #{movieArea,jdbcType=VARCHAR}, #{movieInfo,jdbcType=VARCHAR}, #{movieImg,jdbcType=VARCHAR}, 
+      #{movieEname,jdbcType=VARCHAR}, #{movieScore,jdbcType=REAL}, #{movieStatus,jdbcType=INTEGER}, 
+      #{movieCount,jdbcType=INTEGER}, #{movieBoxOffice,jdbcType=INTEGER}, #{movieTime,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertByMovieBugAddVo" parameterType="com.pmsj.cinema.common.vo.MovieBugAddVo">
+       insert into movie (movie_id, movie_name, movie_release_time,
+      movie_area, movie_info, movie_img,
+      movie_ename, movie_score, movie_status,
+      movie_count, movie_box_office, movie_time
+      )
+    values (#{movieId,jdbcType=INTEGER}, #{movieName,jdbcType=VARCHAR}, #{movieReleaseTime,jdbcType=DATE},
+      #{movieArea,jdbcType=VARCHAR}, #{movieInfo,jdbcType=VARCHAR}, #{movieImg,jdbcType=VARCHAR},
+      #{movieEname,jdbcType=VARCHAR}, #{movieScore,jdbcType=REAL}, #{movieStatus,jdbcType=INTEGER},
+      #{movieCount,jdbcType=INTEGER}, #{movieBoxOffice,jdbcType=INTEGER}, #{movieTime,jdbcType=VARCHAR}
+      )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.pmsj.cinema.common.entity.Movie">
+    update movie
+    set movie_name = #{movieName,jdbcType=VARCHAR},
+      movie_release_time = #{movieReleaseTime,jdbcType=DATE},
+      movie_area = #{movieArea,jdbcType=VARCHAR},
+      movie_info = #{movieInfo,jdbcType=VARCHAR},
+      movie_img = #{movieImg,jdbcType=VARCHAR},
+      movie_ename = #{movieEname,jdbcType=VARCHAR},
+      movie_score = #{movieScore,jdbcType=REAL},
+      movie_status = #{movieStatus,jdbcType=INTEGER},
+      movie_count = #{movieCount,jdbcType=INTEGER},
+      movie_box_office = #{movieBoxOffice,jdbcType=INTEGER},
+      movie_time = #{movieTime,jdbcType=VARCHAR}
+    where movie_id = #{movieId,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    from movie
+    where movie_id = #{movieId,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select *  from movie
+        left join movie_tpye_mid
+        on movie_tpye_mid.movie_id = movie.movie_id
+        left join movie_tpye
+        on movie_tpye.type_id = movie_tpye_mid.type_id
+  </select>
+    <select id="selectOnline" resultMap="BaseResultMap">
+    select *
+    from movie
+    where
+    movie_count>0
+    and
+    movie_status=1
+--
+--
+--
+--
+--     SELECT m.*
+--     FROM movie m
+-- LEFT JOIN
+-- hall_movie h
+-- ON
+-- m.`movie_id`=h.`movie_id`
+--
+--     WHERE
+--     movie_count>0
+--     AND
+--     movie_status=1
+--     AND
+--     h.`start_time` > CURTIME()
+  </select>
+
+    <select id="selectComingSoon" resultMap="BaseResultMap">
+    select *
+    from movie
+    where
+    movie_count=0
+    and
+    movie_status=2
+  </select>
+    <select id="getMaxId" resultType="java.lang.Integer">
+        select max(movie_id)
+        from movie
+    </select>
+    <select id="selectAllMovie" resultMap="BaseResultMap">
+        SELECT m.*
+        FROM
+        (movie_tpye_mid i
+        LEFT JOIN
+        movie_tpye t
+        ON
+        i.type_id = t.type_id
+        )
+        LEFT JOIN
+        movie m
+        ON
+        i.movie_id = m.`movie_id`
+        <where>
+            <if test="status!=0 ">
+                movie_status = #{status}
+            </if>
+            <if test="tId!='' and tId!=0 and tId!=null">
+                and t.type_id = #{tId}
+            </if>
+            <if test="area!=''">
+                and m.movie_area like '%${area}%'
+            </if>
+            <if test="year!=''">
+                and m.movie_release_time like '%${year}%'
+            </if>
+            GROUP BY m.movie_id
+            <if test="paixu==1">
+                ORDER BY movie_box_office DESC
+            </if>
+            <if test="paixu==2">
+                ORDER BY movie_release_time DESC
+            </if>
+            <if test="paixu==3">
+                ORDER BY movie_score DESC
+            </if>
+
+
+        </where>
+
+
+    </select>
+
+
+    <select id="selectTopTen" resultMap="ActorByMovie">
+        SELECT m.*,c.actor_name
+        FROM movie m
+        LEFT JOIN
+        movie_actor a
+        ON
+        m.`movie_id`=a.`movie_id`
+        LEFT JOIN
+        `cast` c
+        ON
+        c.`actor_id`=a.`actor_id`
+        <where>
+            <if test="status==1">
+                movie_status=1
+                order by movie_score desc
+            </if>
+            <if test="status==2">
+                movie_status=2
+                order by movie_want_count desc
+            </if>
+            <if test="status==3">
+                movie_area LIKE '%大陆%'
+                order by movie_box_office desc
+            </if>
+            <if test="status==4">
+                movie_area LIKE '%美国%'
+                order by movie_box_office desc
+            </if>
+            <if test="status==5">
+                movie_status>0
+                order by movie_score desc
+            </if>
+            <if test="status==6">
+                movie_status=1
+                order by movie_box_office desc
+            </if>
+        </where>
+
+    </select>
+
+    <select id="selectIndexTopMovie" resultMap="BaseResultMap">
+        SELECT *
+        FROM movie
+        <where>
+            <if test="status==1">
+                movie_status=1
+                order by movie_box_office desc limit 10
+            </if>
+            <if test="status==2">
+                movie_status=2
+                order by movie_want_count desc limit 10
+            </if>
+            <if test="status==3">
+                movie_status>0
+                order by movie_score desc limit 10
+            </if>
+        </where>
+
+    </select>
+    <select id="getMovieByMovieName" resultMap="BaseResultMap">
+        select * from movie where movie_name like '%${movieName}%'
+    </select>
+
+
+    <select id="getMovieByKeyWord" resultMap="BaseResultMap">
+        select * from movie
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                movie_name like '%${keyword}%'
+            </if>
+        </where>
+    </select>
+
+</mapper>
+
